@@ -1116,5 +1116,132 @@ body {
   </div>
 </footer>
 
+<script src="js/dashboard-api.js"></script>
+<script>
+(async function() {
+  // Load real data from the API
+  try {
+    const user = await DashboardAPI.auth.me();
+    if (!user) return; // redirected to login
+
+    // Load overview stats
+    const overview = await DashboardAPI.dashboard.overview();
+    if (!overview) return;
+
+    // Load customer list for the picker
+    const customers = await DashboardAPI.customers.list();
+
+    // Build customer/device picker dropdown
+    const headerInfo = document.querySelector('.device-info');
+    if (headerInfo && customers && customers.length > 0) {
+      const picker = document.createElement('div');
+      picker.className = 'device-picker';
+      picker.style.cssText = 'position:relative;';
+      picker.innerHTML = `
+        <select id="customerSelect" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:inherit;background:white;min-width:200px;cursor:pointer;">
+          <option value="">-- All Customers (${customers.length}) --</option>
+          ${customers.map(c => `<option value="${DashboardAPI.escapeHtml(c.customerName)}">${DashboardAPI.escapeHtml(c.customerName)} (${c.deviceCount} devices, ${Math.round(c.avgSecurityScore)}%)</option>`).join('')}
+        </select>
+        <select id="deviceSelect" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;font-family:inherit;background:white;min-width:200px;margin-left:8px;cursor:pointer;display:none;">
+        </select>
+      `;
+      headerInfo.parentNode.insertBefore(picker, headerInfo.nextSibling);
+
+      const custSel = document.getElementById('customerSelect');
+      const devSel = document.getElementById('deviceSelect');
+
+      custSel.addEventListener('change', async () => {
+        const name = custSel.value;
+        if (!name) { devSel.style.display = 'none'; loadOverviewData(overview); return; }
+        const detail = await DashboardAPI.customers.detail(name);
+        if (detail && detail.devices) {
+          devSel.innerHTML = `<option value="">-- Select Device (${detail.devices.length}) --</option>` +
+            detail.devices.map(d => `<option value="${d.deviceId}">${d.hostname} (${d.isOnline?'Online':'Offline'}, ${d.securityScore}%)</option>`).join('');
+          devSel.style.display = 'inline-block';
+
+          // Update header with customer info
+          const dn = document.querySelector('.device-name');
+          const dos = document.querySelector('.device-os');
+          if (dn) dn.textContent = detail.customerName;
+          if (dos) dos.innerHTML = `<span class="online-dot"></span> ${detail.onlineDevices}/${detail.deviceCount} devices online`;
+
+          const cn = document.querySelector('.client-name');
+          if (cn) cn.textContent = detail.customerName;
+          const tb = document.querySelector('.tier-badge');
+          if (tb) { tb.className = 'tier-badge ' + detail.licenseTier.toLowerCase(); tb.innerHTML = '<span class="tier-dot"></span>' + detail.licenseTier; }
+
+          // Update score
+          const scoreNum = document.querySelector('.score-num');
+          if (scoreNum) scoreNum.textContent = Math.round(detail.avgSecurityScore);
+        }
+      });
+
+      devSel.addEventListener('change', async () => {
+        const deviceId = devSel.value;
+        if (!deviceId) return;
+        const device = await DashboardAPI.dashboard.device(deviceId);
+        if (device) loadDeviceData(device);
+      });
+    }
+
+    // Populate overview stats
+    loadOverviewData(overview);
+
+  } catch (e) {
+    console.error('Dashboard load error:', e);
+  }
+
+  function loadOverviewData(overview) {
+    // Update the header stats if present
+    const dn = document.querySelector('.device-name');
+    if (dn && !document.getElementById('customerSelect')?.value) {
+      dn.textContent = `${overview.totalDevices} Devices`;
+      const dos = document.querySelector('.device-os');
+      if (dos) dos.innerHTML = `<span class="online-dot"></span> ${overview.onlineDevices} Online / ${overview.offlineDevices} Offline`;
+    }
+
+    // Score
+    const scoreNum = document.querySelector('.score-num');
+    if (scoreNum) scoreNum.textContent = Math.round(overview.avgSecurityScore);
+    const scoreGrade = document.querySelector('.score-grade');
+    if (scoreGrade) scoreGrade.textContent = 'Grade ' + getGrade(overview.avgSecurityScore);
+  }
+
+  function loadDeviceData(device) {
+    const dn = document.querySelector('.device-name');
+    const dos = document.querySelector('.device-os');
+    if (dn) dn.textContent = device.hostname;
+    if (dos) dos.innerHTML = `<span class="online-dot" style="${device.isOnline?'':'background:#ef4444'}"></span> ${device.osVersion} &bull; ${device.isOnline?'Online':'Offline'}`;
+
+    const cn = document.querySelector('.client-name');
+    if (cn) cn.textContent = device.customerName;
+    const tb = document.querySelector('.tier-badge');
+    if (tb) { tb.className = 'tier-badge ' + device.licenseTier.toLowerCase(); tb.innerHTML = '<span class="tier-dot"></span>' + device.licenseTier; }
+
+    const scoreNum = document.querySelector('.score-num');
+    if (scoreNum) scoreNum.textContent = device.securityScore;
+    const scoreGrade = document.querySelector('.score-grade');
+    if (scoreGrade) scoreGrade.textContent = 'Grade ' + device.securityGrade;
+
+    // Update sidebar links with deviceId param
+    document.querySelectorAll('.nav-item[href]').forEach(a => {
+      const href = a.getAttribute('href');
+      if (href && href.endsWith('.html') && !href.includes('?')) {
+        a.setAttribute('href', href + '?deviceId=' + encodeURIComponent(device.deviceId));
+      }
+    });
+  }
+
+  function getGrade(score) {
+    if (score >= 90) return 'A';
+    if (score >= 80) return 'B+';
+    if (score >= 70) return 'B';
+    if (score >= 60) return 'C+';
+    if (score >= 50) return 'C';
+    if (score >= 40) return 'D';
+    return 'F';
+  }
+})();
+</script>
 </body>
 </html>
