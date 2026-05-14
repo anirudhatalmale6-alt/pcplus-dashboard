@@ -1,22 +1,16 @@
 (function() {
-  const STORAGE_KEY = 'pcplus_selected_device';
-  const CUSTOMER_KEY = 'pcplus_selected_customer';
+  var DEVICE_KEY = 'pcplus_selected_device';
+  var CUSTOMER_KEY = 'pcplus_selected_customer';
 
   function getStoredDevice() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch(e) { return null; }
+    try { var raw = localStorage.getItem(DEVICE_KEY); return raw ? JSON.parse(raw) : null; } catch(e) { return null; }
   }
-
   function storeDevice(device) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(device)); } catch(e) {}
+    try { localStorage.setItem(DEVICE_KEY, JSON.stringify(device)); } catch(e) {}
   }
-
   function storeCustomer(name) {
     try { localStorage.setItem(CUSTOMER_KEY, name); } catch(e) {}
   }
-
   function getStoredCustomer() {
     try { return localStorage.getItem(CUSTOMER_KEY) || ''; } catch(e) { return ''; }
   }
@@ -34,51 +28,65 @@
   function updateHeader(device) {
     var dn = document.querySelector('.device-name');
     var dos = document.querySelector('.device-os');
-    if (dn) dn.textContent = device.hostname || device.deviceName || 'Select Device';
-    if (dos) dos.innerHTML = '<span class="online-dot" style="' + (device.isOnline ? '' : 'background:#ef4444') + '"></span> ' +
-      (device.osVersion || '') + ' &bull; ' + (device.isOnline ? 'Online' : 'Offline');
-
+    if (dn) dn.textContent = device.hostname || 'Select Device';
+    if (dos && device.osVersion) dos.innerHTML = '<span class="online-dot" style="' + (device.isOnline ? '' : 'background:#ef4444') + '"></span> ' + device.osVersion + ' &bull; ' + (device.isOnline ? 'Online' : 'Offline');
     var cn = document.querySelector('.client-name');
     if (cn && device.customerName) cn.textContent = device.customerName;
-    var tb = document.querySelector('.tier-badge');
-    if (tb && device.licenseTier) {
-      tb.className = 'tier-badge ' + device.licenseTier.toLowerCase();
-      tb.innerHTML = '<span class="tier-dot"></span>' + device.licenseTier;
-    }
   }
 
-  window.addEventListener('DOMContentLoaded', async function() {
+  window.addEventListener('DOMContentLoaded', function() {
     var params = new URLSearchParams(window.location.search);
     var deviceId = params.get('deviceId');
 
-    if (deviceId && typeof DashboardAPI !== 'undefined') {
-      try {
-        var device = await DashboardAPI.dashboard.device(deviceId);
-        if (device) {
-          storeDevice({ deviceId: deviceId, hostname: device.hostname, osVersion: device.osVersion,
-            isOnline: device.isOnline, customerName: device.customerName, licenseTier: device.licenseTier });
-          storeCustomer(device.customerName || '');
-          updateHeader(device);
-          updateNavLinks(deviceId);
-        }
-      } catch(e) { console.error('Device load error:', e); }
+    if (deviceId) {
+      updateNavLinks(deviceId);
+      var stored = getStoredDevice();
+      if (stored && stored.deviceId === deviceId) {
+        updateHeader(stored);
+      }
     } else {
       var stored = getStoredDevice();
       if (stored && stored.deviceId) {
-        updateHeader(stored);
         updateNavLinks(stored.deviceId);
-        if (typeof DashboardAPI !== 'undefined') {
-          try {
-            var fresh = await DashboardAPI.dashboard.device(stored.deviceId);
-            if (fresh) {
-              storeDevice({ deviceId: stored.deviceId, hostname: fresh.hostname, osVersion: fresh.osVersion,
-                isOnline: fresh.isOnline, customerName: fresh.customerName, licenseTier: fresh.licenseTier });
-              updateHeader(fresh);
-            }
-          } catch(e) {}
-        }
+        updateHeader(stored);
+        var url = new URL(window.location);
+        url.searchParams.set('deviceId', stored.deviceId);
+        if (stored.customerName) url.searchParams.set('customer', stored.customerName);
+        window.history.replaceState({}, '', url.toString());
       }
     }
+
+    var observer = new MutationObserver(function() {
+      var dpDevice = document.getElementById('dpDevice');
+      if (dpDevice && !dpDevice._persisted) {
+        dpDevice._persisted = true;
+        dpDevice.addEventListener('change', function() {
+          var did = dpDevice.value;
+          if (did) {
+            var text = dpDevice.options[dpDevice.selectedIndex].text;
+            var hostname = text.split('(')[0].trim();
+            storeDevice({ deviceId: did, hostname: hostname, customerName: getStoredCustomer() });
+          }
+        });
+      }
+      var dpCustomer = document.getElementById('dpCustomer');
+      if (dpCustomer && !dpCustomer._persisted) {
+        dpCustomer._persisted = true;
+        dpCustomer.addEventListener('change', function() {
+          storeCustomer(dpCustomer.value);
+        });
+      }
+      var custSel = document.getElementById('customerSelect');
+      if (custSel && !custSel._persisted) {
+        custSel._persisted = true;
+        var storedCust = getStoredCustomer();
+        if (storedCust && !custSel.value) {
+          custSel.value = storedCust;
+          custSel.dispatchEvent(new Event('change'));
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   });
 
   window.PCPlusPersistence = {
