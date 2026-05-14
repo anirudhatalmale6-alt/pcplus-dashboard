@@ -639,7 +639,7 @@ body {
 
   <div class="client-section">
     <div>
-      <div class="client-name">Modi Home</div>
+      <div class="client-name">Select Client</div>
       <div class="client-company">Assigned Client</div>
     </div>
     <span class="tier-badge business"><span class="tier-dot"></span>Business</span>
@@ -1180,7 +1180,13 @@ body {
         const deviceId = devSel.value;
         if (!deviceId) return;
         const device = await DashboardAPI.dashboard.device(deviceId);
-        if (device) loadDeviceData(device);
+        if (device) {
+          loadDeviceData(device);
+          if (window.PCPlusPersistence) {
+            PCPlusPersistence.storeDevice({ deviceId: deviceId, hostname: device.hostname, osVersion: device.osVersion, isOnline: device.isOnline, customerName: device.customerName, licenseTier: device.licenseTier });
+            PCPlusPersistence.storeCustomer(device.customerName || '');
+          }
+        }
       });
     }
 
@@ -1279,5 +1285,6 @@ body {
   };
 })();
 </script>
+<script src="js/device-persistence.js"></script>
 </body>
 </html>
