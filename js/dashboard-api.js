@@ -1,10 +1,10 @@
 /**
- * PC Plus Dashboard API Layer v4.23.0
+ * PC Plus Dashboard API Layer v5.10.0
  * Fetches real data from the backend and populates dashboard pages.
  * Include this script on any dashboard page to wire up live data.
  */
 const DashboardAPI = (() => {
-  const BASE = '';  // Same origin when served by the .NET app
+  const BASE = '';
 
   async function fetchJSON(url, options = {}) {
     const res = await fetch(BASE + url, { credentials: 'include', ...options });
@@ -32,14 +32,12 @@ const DashboardAPI = (() => {
     });
   }
 
-  // Auth
   const auth = {
     me: () => fetchJSON('/api/auth/me'),
     login: (username, password) => post('/api/auth/login', { username, password }),
     logout: () => post('/api/auth/logout', {})
   };
 
-  // Dashboard overview
   const dashboard = {
     overview: () => fetchJSON('/api/dashboard/overview'),
     devices: (params = {}) => {
@@ -67,7 +65,6 @@ const DashboardAPI = (() => {
     }
   };
 
-  // Security-specific endpoints
   const security = {
     scanResults: (deviceId) => fetchJSON(`/api/dashboard/devices/${deviceId}/scan-results`),
     accessControl: (deviceId) => fetchJSON(`/api/dashboard/devices/${deviceId}/access-control`),
@@ -82,7 +79,24 @@ const DashboardAPI = (() => {
     }
   };
 
-  // Customer management
+  const dns = {
+    stats: () => fetchJSON('/api/dns/stats'),
+    clientStats: (clientIp) => fetchJSON(`/api/dns/stats/client/${encodeURIComponent(clientIp)}`),
+    querylog: (params = {}) => {
+      const q = new URLSearchParams(params).toString();
+      return fetchJSON(`/api/dns/querylog${q ? '?' + q : ''}`);
+    },
+    status: () => fetchJSON('/api/dns/status'),
+    filtering: () => fetchJSON('/api/dns/filtering/status')
+  };
+
+  const vulnerability = {
+    scans: () => fetchJSON('/api/vulnerability/scans'),
+    latestReport: (rows) => fetchJSON(`/api/vulnerability/reports/latest${rows ? '?rows=' + rows : ''}`),
+    report: (id, rows) => fetchJSON(`/api/vulnerability/reports/${id}${rows ? '?rows=' + rows : ''}`),
+    summary: () => fetchJSON('/api/vulnerability/summary')
+  };
+
   const customers = {
     list: (params = {}) => {
       const q = new URLSearchParams(params).toString();
@@ -92,17 +106,14 @@ const DashboardAPI = (() => {
     setTier: (name, tier) => put(`/api/dashboard/customers/${encodeURIComponent(name)}/tier`, { tier })
   };
 
-  // Reports
   const reports = {
     company: (name) => fetchJSON(`/api/reports/company/${encodeURIComponent(name)}`)
   };
 
-  // Utility: populate overview stats on the main dashboard
   async function populateOverview() {
     try {
       const data = await dashboard.overview();
       if (!data) return;
-
       setTextContent('[data-stat="total-devices"]', data.totalDevices);
       setTextContent('[data-stat="online-devices"]', data.onlineDevices);
       setTextContent('[data-stat="offline-devices"]', data.offlineDevices);
@@ -111,27 +122,21 @@ const DashboardAPI = (() => {
       setTextContent('[data-stat="lockdown-devices"]', data.devicesInLockdown);
       setTextContent('[data-stat="open-incidents"]', data.openIncidents);
       setTextContent('[data-stat="avg-score"]', Math.round(data.avgSecurityScore));
-
-      // Tier breakdown
       if (data.devicesByTier) {
         setTextContent('[data-stat="tier-free"]', data.devicesByTier['Free'] || 0);
         setTextContent('[data-stat="tier-home"]', data.devicesByTier['Home'] || 0);
         setTextContent('[data-stat="tier-business"]', data.devicesByTier['Business'] || 0);
         setTextContent('[data-stat="tier-enterprise"]', data.devicesByTier['Enterprise'] || 0);
       }
-    } catch (e) {
-      console.error('Failed to load overview:', e);
-    }
+    } catch (e) { console.error('Failed to load overview:', e); }
   }
 
-  // Utility: populate customer list
   async function populateCustomers(containerId) {
     try {
       const data = await customers.list();
       if (!data) return;
       const container = document.getElementById(containerId);
       if (!container) return;
-
       container.innerHTML = data.map(c => `
         <tr>
           <td><strong>${escapeHtml(c.customerName)}</strong></td>
@@ -143,25 +148,18 @@ const DashboardAPI = (() => {
           <td>${timeAgo(c.lastSeen)}</td>
         </tr>
       `).join('');
-    } catch (e) {
-      console.error('Failed to load customers:', e);
-    }
+    } catch (e) { console.error('Failed to load customers:', e); }
   }
 
-  // Utility: populate device list
   async function populateDevices(containerId, params = {}) {
     try {
       const data = await dashboard.devices(params);
       if (!data) return;
       const container = document.getElementById(containerId);
       if (!container) return;
-
       container.innerHTML = data.map(d => `
         <tr data-device-id="${escapeHtml(d.deviceId)}">
-          <td>
-            <span class="status-dot ${d.isOnline ? 'online' : 'offline'}"></span>
-            <strong>${escapeHtml(d.hostname)}</strong>
-          </td>
+          <td><span class="status-dot ${d.isOnline ? 'online' : 'offline'}"></span><strong>${escapeHtml(d.hostname)}</strong></td>
           <td>${escapeHtml(d.customerName)}</td>
           <td><span class="tier-badge tier-${d.licenseTier.toLowerCase()}">${d.licenseTier}</span></td>
           <td>${escapeHtml(d.osVersion)}</td>
@@ -171,27 +169,20 @@ const DashboardAPI = (() => {
           <td>${timeAgo(d.lastSeen)}</td>
         </tr>
       `).join('');
-    } catch (e) {
-      console.error('Failed to load devices:', e);
-    }
+    } catch (e) { console.error('Failed to load devices:', e); }
   }
 
-  // Utility: populate scan results for a device
   async function populateScanResults(deviceId, containerId) {
     try {
       const data = await security.scanResults(deviceId);
       if (!data) return;
       const container = document.getElementById(containerId);
       if (!container) return;
-
-      // Update summary
       setTextContent('[data-stat="total-checks"]', data.totalChecks);
       setTextContent('[data-stat="passed-checks"]', data.passedChecks);
       setTextContent('[data-stat="failed-checks"]', data.failedChecks);
       setTextContent('[data-stat="security-score"]', data.securityScore + '%');
       setTextContent('[data-stat="security-grade"]', data.securityGrade);
-
-      // Build category sections
       container.innerHTML = data.categories.map(cat => `
         <div class="category-section">
           <div class="category-header">
@@ -213,12 +204,9 @@ const DashboardAPI = (() => {
           </table>
         </div>
       `).join('');
-    } catch (e) {
-      console.error('Failed to load scan results:', e);
-    }
+    } catch (e) { console.error('Failed to load scan results:', e); }
   }
 
-  // Helpers
   function setTextContent(selector, value) {
     const el = document.querySelector(selector);
     if (el) el.textContent = value;
@@ -250,18 +238,16 @@ const DashboardAPI = (() => {
     return 'f';
   }
 
-  // Get device ID from URL params
   function getDeviceId() {
     return new URLSearchParams(window.location.search).get('deviceId') || '';
   }
 
-  // Get customer name from URL params
   function getCustomerName() {
     return new URLSearchParams(window.location.search).get('customer') || '';
   }
 
   return {
-    auth, dashboard, security, customers, reports,
+    auth, dashboard, security, dns, vulnerability, customers, reports,
     populateOverview, populateCustomers, populateDevices, populateScanResults,
     getDeviceId, getCustomerName, escapeHtml, timeAgo, getGradeClass,
     fetchJSON, post, put
