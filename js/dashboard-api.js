@@ -13,7 +13,8 @@ const DashboardAPI = (() => {
       return null;
     }
     if (!res.ok) throw new Error(`API ${res.status}: ${res.statusText}`);
-    return res.json();
+    const text = await res.text();
+    return text ? JSON.parse(text) : { ok: true };
   }
 
   async function post(url, body) {
