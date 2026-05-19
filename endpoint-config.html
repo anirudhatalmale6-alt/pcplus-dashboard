@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC Plus Computing - Endpoint Configuration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sidebar: #0a1628;
+  --sidebar-hover: #0f1f38;
+  --sidebar-active: #2596be;
+  --content-bg: #f0f3f8;
+  --card: #ffffff;
+  --text-primary: #1a2332;
+  --text-secondary: #5a6b7f;
+  --text-muted: #8d9bb0;
+  --accent: #2596be;
+  --accent-dark: #1d7a9c;
+  --accent-light: #e6f3fa;
+  --green: #10b981;
+  --green-bg: #d1fae5;
+  --yellow: #f59e0b;
+  --yellow-bg: #fef3c7;
+  --red: #ef4444;
+  --red-bg: #fee2e2;
+  --blue: #3b82f6;
+  --border: #e5e9f0;
+  --shadow: 0 1px 3px rgba(10,22,40,0.06), 0 1px 2px rgba(10,22,40,0.04);
+  --shadow-md: 0 4px 16px rgba(10,22,40,0.08), 0 2px 6px rgba(10,22,40,0.04);
+  --shadow-lg: 0 8px 30px rgba(10,22,40,0.12), 0 4px 12px rgba(10,22,40,0.06);
+  --radius: 12px;
+  --sidebar-w: 232px;
+  --header-h: 64px;
+  --footer-h: 46px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  background: var(--content-bg);
+  background-image: radial-gradient(circle at 20% 50%, rgba(37,150,190,0.03) 0%, transparent 50%),
+                     radial-gradient(circle at 80% 20%, rgba(16,185,129,0.02) 0%, transparent 50%);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: linear-gradient(180deg, #0c1a2e 0%, #081422 100%);
+  color: #fff;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #1e3a5f transparent;
+}
+
+.sidebar-logo {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(37,150,190,0.05);
+}
+
+.logo-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #2596be 0%, #1d7a9c 100%);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(37,150,190,0.3);
+}
+
+.logo-text h2 { font-size: 14px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.25; }
+.logo-text span { font-size: 9px; color: #5a7a94; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; }
+
+.sidebar-nav { flex: 1; padding: 8px 0; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 18px;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: all 0.15s;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+}
+
+.nav-item:hover { background: rgba(37,150,190,0.08); color: #c8d6e5; }
+
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(37,150,190,0.25) 0%, rgba(37,150,190,0.08) 100%);
+  color: #fff;
+  border-left-color: var(--accent);
+  font-weight: 600;
+  border-radius: 0 6px 6px 0;
+  margin-right: 8px;
+}
+
+.nav-section {
+  padding: 14px 18px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.nav-icon { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; }
+.nav-item.active .nav-icon { opacity: 1; }
+
+.sidebar-footer {
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; color: #64748b;
+}
+
+.sidebar-footer .dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; }
+
+/* ─── HEADER ─── */
+.header {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-w);
+  right: 0;
+  height: var(--header-h);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 20px;
+  z-index: 90;
+}
+
+.device-info { display: flex; flex-direction: column; }
+.device-name { font-weight: 700; font-size: 14px; color: var(--text-primary); }
+.device-os { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.device-os .online-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; }
+
+.header-sync { font-size: 11px; color: var(--text-muted); }
+
+.header-status {
+  display: flex; align-items: center; gap: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.protected-badge {
+  display: flex; flex-direction: column; align-items: center;
+}
+
+.protected-text { font-size: 22px; font-weight: 800; color: var(--green); letter-spacing: 2px; text-shadow: 0 0 20px rgba(16,185,129,0.15); }
+.risk-text { font-size: 11px; color: var(--text-secondary); }
+.risk-text b { color: var(--yellow); font-weight: 700; }
+
+.tier-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.tier-badge.business { background: linear-gradient(135deg, rgba(37,150,190,0.12), rgba(37,150,190,0.06)); color: var(--accent); border: 1px solid rgba(37,150,190,0.2); }
+.tier-badge .tier-dot { width: 6px; height: 6px; border-radius: 50%; }
+.tier-badge.business .tier-dot { background: var(--accent); }
+
+.client-section { display: flex; align-items: center; gap: 12px; padding-left: 16px; border-left: 1px solid var(--border); }
+.client-name { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.client-company { font-size: 10px; color: var(--text-muted); }
+
+.header-actions { display: flex; gap: 8px; }
+
+.hdr-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-primary);
+  transition: all 0.15s;
+}
+
+.hdr-btn:hover { border-color: var(--accent); color: var(--accent); }
+.hdr-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff; border-color: transparent; box-shadow: 0 2px 8px rgba(37,150,190,0.25); }
+.hdr-btn.primary:hover { background: linear-gradient(135deg, var(--accent-dark), #16687f); box-shadow: 0 2px 12px rgba(37,150,190,0.35); }
+.hdr-btn svg { width: 14px; height: 14px; }
+
+.header-user {
+  display: flex; align-items: center; gap: 8px;
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+}
+
+.user-avatar {
+  width: 34px; height: 34px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 700;
+}
+
+.user-info { font-size: 11px; }
+.user-info .name { font-weight: 700; color: var(--text-primary); }
+.user-info .role { color: var(--text-muted); font-size: 10px; }
+
+/* ─── MAIN ─── */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: var(--header-h);
+  padding: 20px 24px;
+  padding-bottom: calc(var(--footer-h) + 20px);
+  min-height: calc(100vh - var(--header-h));
+}
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.card-title { font-size: 11.5px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+.card-link { font-size: 11px; color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: none; transition: color 0.15s; }
+.card-link:hover { color: var(--accent-dark); }
+
+/* ─── PAGE TITLE ─── */
+.page-title-section {
+  margin-bottom: 20px;
+}
+.page-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.page-subtitle {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+/* ─── TOGGLE SWITCH ─── */
+.toggle-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.toggle-wrap:last-child { border-bottom: none; }
+
+.toggle-info { flex: 1; min-width: 0; }
+.toggle-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+  display: flex; align-items: center; gap: 8px;
+}
+.toggle-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.toggle-switch {
+  position: relative;
+  width: 38px; height: 20px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #cbd5e1;
+  border-radius: 20px;
+  transition: 0.2s;
+}
+.toggle-slider:before {
+  content: "";
+  position: absolute;
+  height: 16px; width: 16px;
+  left: 2px; bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--green); }
+.toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); }
+.toggle-switch input:disabled + .toggle-slider { background: #e2e8f0; cursor: not-allowed; opacity: 0.6; }
+
+/* ─── DROPDOWN SELECT ─── */
+.settings-select {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+.settings-select:focus { outline: none; border-color: var(--accent); }
+
+/* ─── DEVICE SELECTOR ─── */
+.device-selector {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.device-selector select {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  min-width: 320px;
+  transition: border-color 0.15s;
+}
+.device-selector select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,150,190,0.1); }
+
+.device-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.device-meta .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.device-meta .status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.device-meta .status-dot.online { background: var(--green); }
+.device-meta .status-dot.offline { background: var(--red); }
+
+.apply-all-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.apply-all-wrap input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ─── TIER RADIO ─── */
+.tier-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tier-option {
+  flex: 1;
+  min-width: 180px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.tier-option:hover { border-color: rgba(37,150,190,0.3); }
+.tier-option.selected { border-color: var(--accent); background: var(--accent-light); }
+
+.tier-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tier-option-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.tier-option-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.tier-option-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.tier-option.selected .tier-option-check {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.tier-option.selected .tier-option-check svg { display: block; }
+.tier-option .tier-option-check svg { display: none; }
+
+.tier-modules {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tier-modules li {
+  font-size: 11px;
+  color: var(--text-secondary);
+  padding: 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tier-modules li .check-icon { color: var(--green); font-weight: 700; font-size: 12px; }
+.tier-modules li .x-icon { color: var(--text-muted); font-weight: 700; font-size: 12px; }
+
+/* ─── INTERVAL INPUT ─── */
+.interval-group-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 14px 0 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.interval-group-title:first-child { padding-top: 0; }
+
+.interval-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.interval-row:last-child { border-bottom: none; }
+
+.interval-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.interval-key {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+}
+
+.interval-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.interval-input-wrap input[type="number"] {
+  width: 80px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  text-align: right;
+  transition: border-color 0.15s;
+}
+.interval-input-wrap input[type="number"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,150,190,0.1); }
+
+.interval-unit {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  min-width: 50px;
+}
+
+/* ─── PASSWORD INPUT ─── */
+.password-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.password-input-wrap input[type="text"],
+.password-input-wrap input[type="password"] {
+  width: 200px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: border-color 0.15s;
+}
+.password-input-wrap input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,150,190,0.1); }
+
+.btn-toggle-pw {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.btn-toggle-pw:hover { border-color: var(--accent); color: var(--accent); }
+.btn-toggle-pw svg { width: 14px; height: 14px; }
+
+/* ─── PUSH CONFIG BUTTON ─── */
+.btn-push-config {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #fff;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(37,150,190,0.25);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.btn-push-config:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,150,190,0.35); }
+.btn-push-config:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-push-config svg { width: 16px; height: 16px; }
+
+.push-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.push-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ─── PENDING CONFIG TABLE ─── */
+.pending-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+.pending-table thead th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  background: #f8fafc;
+}
+.pending-table tbody td {
+  padding: 9px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.pending-table tbody tr:hover { background: #fafbfc; }
+
+.pending-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.pending-status.pending { background: var(--yellow-bg); color: #d97706; }
+.pending-status.applied { background: var(--green-bg); color: #16a34a; }
+.pending-status.failed { background: var(--red-bg); color: var(--red); }
+
+.empty-state {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ─── TOAST ─── */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 3.7s forwards;
+  max-width: 380px;
+}
+.toast.success { background: var(--green-bg); color: #16a34a; border: 1px solid #a7f3d0; }
+.toast.error { background: var(--red-bg); color: var(--red); border: 1px solid #fca5a5; }
+.toast.info { background: var(--accent-light); color: var(--accent-dark); border: 1px solid #bae6fd; }
+
+@keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(40px); } }
+
+/* ─── SECTION ANCHOR ─── */
+.section-anchor {
+  scroll-margin-top: calc(var(--header-h) + 20px);
+}
+
+/* ─── STATUS BADGES ─── */
+.status-yes {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--green-bg);
+  color: #16a34a;
+}
+.status-no {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+/* ─── CONFIG ROW ─── */
+.config-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.config-row:last-child { border-bottom: none; }
+.config-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: var(--sidebar-w);
+  right: 0;
+  height: var(--footer-h);
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 24px;
+  z-index: 90;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
+}
+
+.footer-item { display: flex; align-items: center; gap: 8px; }
+.footer-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+.footer-icon svg { width: 18px; height: 18px; }
+.footer-label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+.footer-val { font-size: 11px; font-weight: 700; }
+.footer-val.green { color: var(--green); }
+.footer-val.blue { color: var(--accent); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+.card { animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.nav-item { animation: slideIn 0.3s ease both; }
+.nav-section ~ .nav-item:nth-child(2) { animation-delay: 0.02s; }
+.nav-section ~ .nav-item:nth-child(3) { animation-delay: 0.04s; }
+
+/* ─── SCROLLBAR ─── */
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 2px; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .main, .header, .footer { margin-left: 0; left: 0; }
+  .header-status { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ SIDEBAR ═══════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div class="logo-text">
+      <h2>PC PLUS<br>COMPUTING</h2>
+      <span>Endpoint Protection</span>
+    </div>
+  </div>
+
+    <nav class="sidebar-nav">
+    <a class="nav-item" href="index.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Dashboard</a>
+    <div class="nav-section">Security</div>
+    <a class="nav-item" href="scan-results.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Scan &amp; Threat Protection</a>
+    <a class="nav-item" href="realtime-protection.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Real-Time Protection</a>
+    <a class="nav-item" href="ransomware-shield.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg> Ransomware Shield</a>
+    <a class="nav-item" href="security-logs.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg> Detection History</a>
+    <a class="nav-item" href="scan-results.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Quarantine</a>
+    <a class="nav-item" href="ai-advisor.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4c0 2-2 3-2 5h-4c0-2-2-3-2-5a4 4 0 014-4z"/><path d="M10 17h4"/><path d="M10 20h4"/></svg> AI Threat Advisor</a>
+    <div class="nav-section">Compliance</div>
+    <a class="nav-item" href="compliance-overview.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Compliance Overview</a>
+    <a class="nav-item" href="compliance-overview.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg> CyberSecure Canada</a>
+    <a class="nav-item" href="compliance-overview.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg> NIST CSF 2.0</a>
+    <a class="nav-item" href="compliance-overview.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> CIS Controls</a>
+    <a class="nav-item" href="compliance-overview.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg> Insurance Readiness</a>
+    <a class="nav-item" href="compliance-overview.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg> Compliance Evidence</a>
+    <div class="nav-section">Backup &amp; Recovery</div>
+    <a class="nav-item" href="backup-detail.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Backup Health</a>
+    <a class="nav-item" href="backup-detail.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Recovery Readiness</a>
+    <a class="nav-item" href="backup-detail.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg> Restore Testing</a>
+    <a class="nav-item" href="backup-detail.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-4V4a2 2 0 00-4 0v6H6a2 2 0 00-2 2v1a7 7 0 0014 0v-1a2 2 0 00-2-2z"/></svg> Cloud Backup</a>
+    <div class="nav-section">Network</div>
+    <a class="nav-item" href="network-security.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg> Network Security</a>
+    <a class="nav-item" href="network-security.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Firewall</a>
+    <a class="nav-item" href="network-security.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg> Open Ports</a>
+    <a class="nav-item" href="network-security.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg> WiFi Security</a>
+    <a class="nav-item" href="network-security.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 009 9"/></svg> Network Map</a>
+    <div class="nav-section">Performance</div>
+    <a class="nav-item" href="index.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> System Health</a>
+    <a class="nav-item" href="index.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Optimization</a>
+    <a class="nav-item" href="index.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg> Startup Apps</a>
+    <div class="nav-section">Support</div>
+    <a class="nav-item" href="settings.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Live Chat</a>
+    <a class="nav-item" href="settings.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg> Support Ticket</a>
+    <a class="nav-item" href="settings.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Remote Support</a>
+    <a class="nav-item" href="settings.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg> Screenshot Tool</a>
+    <div class="nav-section">Reports</div>
+    <a class="nav-item" href="reports.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Executive Reports</a>
+    <a class="nav-item" href="reports.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Security Reports</a>
+    <a class="nav-item" href="reports.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg> Compliance Reports</a>
+    <div class="nav-section">Settings</div>
+    <a class="nav-item" href="settings.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Policies</a>
+    <a class="nav-item" href="settings.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg> Notifications</a>
+    <a class="nav-item" href="settings.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Privacy Settings</a>
+    <a class="nav-item active" href="endpoint-config.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg> Endpoint Config</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="dot"></div>
+    <span>Agent v4.27.0</span>
+    <span style="margin-left:auto; color: var(--green); font-weight:600;">Up to date</span>
+  </div>
+</aside>
+
+<!-- ═══════ HEADER ═══════ -->
+<header class="header">
+  <div class="device-info">
+    <span class="device-name" id="headerDeviceName">Select Device</span>
+    <span class="device-os"><span class="online-dot"></span> No device selected</span>
+  </div>
+  <div class="header-sync">Last sync: May 8, 2026 06:01 PM</div>
+
+  <div class="header-status">
+    <div class="protected-badge">
+      <span class="protected-text">PROTECTED</span>
+      <span class="risk-text">Risk Level: <b>Medium</b></span>
+    </div>
+  </div>
+
+  <div class="client-section">
+    <div>
+      <div class="client-name">Select Client</div>
+      <div class="client-company">Assigned Client</div>
+    </div>
+    <span class="tier-badge business"><span class="tier-dot"></span>Business</span>
+  </div>
+
+  <div class="header-actions">
+    <button class="hdr-btn primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      Quick Scan
+    </button>
+    <button class="hdr-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Lockdown
+    </button>
+    <button class="hdr-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Backup Now
+    </button>
+  </div>
+
+  <div class="header-user">
+    <div class="user-avatar">PP</div>
+    <div class="user-info">
+      <div class="name">PC Plus</div>
+      <div class="role">Managed by PC Plus Computing</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════ TOAST CONTAINER ═══════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══════ MAIN CONTENT ═══════ -->
+<main class="main">
+
+  <!-- Page Title -->
+  <div class="page-title-section">
+    <h1 class="page-title">Endpoint Configuration</h1>
+    <p class="page-subtitle">Remotely configure tray agent settings, module toggles, scan intervals, and security parameters per device</p>
+  </div>
+
+  <!-- ═══════ DEVICE SELECTOR ═══════ -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Device Selector</span></div>
+    <div class="device-selector">
+      <select id="deviceSelect">
+        <option value="">-- Loading devices... --</option>
+      </select>
+      <div class="device-meta" id="deviceMeta" style="display:none;">
+        <div class="meta-item"><span class="status-dot" id="metaStatusDot"></span> <span id="metaStatus">Offline</span></div>
+        <div class="meta-item">ID: <strong id="metaDeviceId">--</strong></div>
+        <div class="meta-item">Tier: <strong id="metaTier">--</strong></div>
+      </div>
+      <label class="apply-all-wrap">
+        <input type="checkbox" id="applyAllCheckbox">
+        Apply to All Devices
+      </label>
+    </div>
+  </div>
+
+  <!-- ═══════ LICENSE TIER ═══════ -->
+  <div class="card" id="tierCard" style="display:none;">
+    <div class="card-header"><span class="card-title">License Tier</span><span class="card-link" id="tierCurrentLabel">Current: --</span></div>
+    <div class="tier-options">
+      <label class="tier-option" data-tier="Free">
+        <input type="radio" name="activeTier" value="Free">
+        <div class="tier-option-header">
+          <span class="tier-option-name">Free</span>
+          <span class="tier-option-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <ul class="tier-modules">
+          <li><span class="check-icon">&#10003;</span> Basic Security Scan</li>
+          <li><span class="check-icon">&#10003;</span> Policy Enforcement</li>
+          <li><span class="x-icon">&#10007;</span> Health Monitoring</li>
+          <li><span class="x-icon">&#10007;</span> Ransomware Shield</li>
+          <li><span class="x-icon">&#10007;</span> Geo-IP Scanner</li>
+          <li><span class="x-icon">&#10007;</span> URL Reputation</li>
+          <li><span class="x-icon">&#10007;</span> Phishing Protection</li>
+        </ul>
+      </label>
+      <label class="tier-option" data-tier="Standard">
+        <input type="radio" name="activeTier" value="Standard">
+        <div class="tier-option-header">
+          <span class="tier-option-name">Standard</span>
+          <span class="tier-option-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <ul class="tier-modules">
+          <li><span class="check-icon">&#10003;</span> Basic Security Scan</li>
+          <li><span class="check-icon">&#10003;</span> Policy Enforcement</li>
+          <li><span class="check-icon">&#10003;</span> Health Monitoring</li>
+          <li><span class="check-icon">&#10003;</span> Ransomware Shield</li>
+          <li><span class="check-icon">&#10003;</span> Geo-IP Scanner</li>
+          <li><span class="x-icon">&#10007;</span> URL Reputation</li>
+          <li><span class="x-icon">&#10007;</span> Phishing Protection</li>
+        </ul>
+      </label>
+      <label class="tier-option" data-tier="Premium">
+        <input type="radio" name="activeTier" value="Premium">
+        <div class="tier-option-header">
+          <span class="tier-option-name">Premium</span>
+          <span class="tier-option-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+        </div>
+        <ul class="tier-modules">
+          <li><span class="check-icon">&#10003;</span> Basic Security Scan</li>
+          <li><span class="check-icon">&#10003;</span> Policy Enforcement</li>
+          <li><span class="check-icon">&#10003;</span> Health Monitoring</li>
+          <li><span class="check-icon">&#10003;</span> Ransomware Shield</li>
+          <li><span class="check-icon">&#10003;</span> Geo-IP Scanner</li>
+          <li><span class="check-icon">&#10003;</span> URL Reputation</li>
+          <li><span class="check-icon">&#10003;</span> Phishing Protection</li>
+        </ul>
+      </label>
+    </div>
+  </div>
+
+  <!-- ═══════ MODULE TOGGLES ═══════ -->
+  <div class="card" id="modulesCard" style="display:none;">
+    <div class="card-header"><span class="card-title">Module Toggles</span></div>
+
+    <div class="toggle-wrap">
+      <div class="toggle-info">
+        <div class="toggle-label">Health Monitoring</div>
+        <div class="toggle-desc">System resource monitoring, CPU/RAM/disk telemetry</div>
+      </div>
+      <label class="toggle-switch"><input type="checkbox" id="toggle_healthMonitorEnabled"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="toggle-wrap">
+      <div class="toggle-info">
+        <div class="toggle-label">Geo-IP Scanner</div>
+        <div class="toggle-desc">Scan active connections for suspicious geographic origins</div>
+      </div>
+      <label class="toggle-switch"><input type="checkbox" id="toggle_geoIpScanEnabled"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="toggle-wrap">
+      <div class="toggle-info">
+        <div class="toggle-label">URL Reputation</div>
+        <div class="toggle-desc">Check visited URLs against threat intelligence databases</div>
+      </div>
+      <label class="toggle-switch"><input type="checkbox" id="toggle_urlReputationEnabled"><span class="toggle-slider"></span></label>
+    </div>
+  </div>
+
+  <!-- ═══════ TIMER INTERVALS ═══════ -->
+  <div class="card" id="intervalsCard" style="display:none;">
+    <div class="card-header"><span class="card-title">Timer Intervals</span></div>
+
+    <!-- Health -->
+    <div class="interval-group-title">Health</div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Health Poll Interval</div>
+        <div class="interval-key">healthPollIntervalMs</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_healthPollIntervalMs" min="1" step="1" data-unit="ms-to-s">
+        <span class="interval-unit">seconds</span>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div class="interval-group-title">Security</div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Security Scan</div>
+        <div class="interval-key">securityScanIntervalMinutes</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_securityScanIntervalMinutes" min="1" step="0.5" data-unit="min-to-hr">
+        <span class="interval-unit">hours</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Binary Integrity</div>
+        <div class="interval-key">binaryIntegrityIntervalMinutes</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_binaryIntegrityIntervalMinutes" min="1" step="1" data-unit="min">
+        <span class="interval-unit">minutes</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Services Monitor</div>
+        <div class="interval-key">servicesMonitorIntervalSeconds</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_servicesMonitorIntervalSeconds" min="1" step="1" data-unit="sec">
+        <span class="interval-unit">seconds</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Geo-IP Scan</div>
+        <div class="interval-key">geoIpScanIntervalSeconds</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_geoIpScanIntervalSeconds" min="1" step="0.5" data-unit="sec-to-min">
+        <span class="interval-unit">minutes</span>
+      </div>
+    </div>
+
+    <!-- Ransomware -->
+    <div class="interval-group-title">Ransomware</div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Process Monitor</div>
+        <div class="interval-key">ransomwareProcessMonitorMs</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_ransomwareProcessMonitorMs" min="1" step="1" data-unit="ms-to-s">
+        <span class="interval-unit">seconds</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Reconciliation</div>
+        <div class="interval-key">ransomwareReconciliationMs</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_ransomwareReconciliationMs" min="1" step="1" data-unit="ms-to-s">
+        <span class="interval-unit">seconds</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Registry Sentinel</div>
+        <div class="interval-key">advancedDetectionRegistryMs</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_advancedDetectionRegistryMs" min="1" step="1" data-unit="ms-to-s">
+        <span class="interval-unit">seconds</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Lateral Movement</div>
+        <div class="interval-key">advancedDetectionNetworkMs</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_advancedDetectionNetworkMs" min="1" step="1" data-unit="ms-to-s">
+        <span class="interval-unit">seconds</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Hardening Compliance</div>
+        <div class="interval-key">hardeningComplianceIntervalMinutes</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_hardeningComplianceIntervalMinutes" min="1" step="1" data-unit="min">
+        <span class="interval-unit">minutes</span>
+      </div>
+    </div>
+
+    <!-- Phishing -->
+    <div class="interval-group-title">Phishing</div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Hosts File Integrity</div>
+        <div class="interval-key">hostsFileIntegrityIntervalSeconds</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_hostsFileIntegrityIntervalSeconds" min="1" step="0.5" data-unit="sec-to-min">
+        <span class="interval-unit">minutes</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">DNS Cache Monitor</div>
+        <div class="interval-key">dnsCacheMonitorIntervalSeconds</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_dnsCacheMonitorIntervalSeconds" min="1" step="0.5" data-unit="sec-to-min">
+        <span class="interval-unit">minutes</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Browser History</div>
+        <div class="interval-key">browserHistoryScanIntervalMinutes</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_browserHistoryScanIntervalMinutes" min="1" step="1" data-unit="min">
+        <span class="interval-unit">minutes</span>
+      </div>
+    </div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">URL Reputation</div>
+        <div class="interval-key">urlReputationIntervalSeconds</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_urlReputationIntervalSeconds" min="1" step="0.5" data-unit="sec-to-min">
+        <span class="interval-unit">minutes</span>
+      </div>
+    </div>
+
+    <!-- Policy -->
+    <div class="interval-group-title">Policy</div>
+    <div class="interval-row">
+      <div>
+        <div class="interval-label">Policy Enforcement</div>
+        <div class="interval-key">policyEnforcementIntervalSeconds</div>
+      </div>
+      <div class="interval-input-wrap">
+        <input type="number" id="interval_policyEnforcementIntervalSeconds" min="1" step="0.5" data-unit="sec-to-min">
+        <span class="interval-unit">minutes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ SECURITY SETTINGS ═══════ -->
+  <div class="card" id="securityCard" style="display:none;">
+    <div class="card-header"><span class="card-title">Security Settings</span></div>
+
+    <div class="config-row">
+      <div>
+        <div class="config-label">Tray Admin Password</div>
+        <div style="font-size:10px; color:var(--text-muted);">Password required to access tray settings locally</div>
+      </div>
+      <div class="password-input-wrap">
+        <input type="password" id="input_trayAdminPassword" placeholder="Enter password">
+        <button class="btn-toggle-pw" id="btnTogglePw" title="Show/hide password">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="toggle-wrap">
+      <div class="toggle-info">
+        <div class="toggle-label">Auto-Containment</div>
+        <div class="toggle-desc">Automatically isolate suspicious processes in a sandbox</div>
+      </div>
+      <label class="toggle-switch"><input type="checkbox" id="toggle_autoContainmentEnabled"><span class="toggle-slider"></span></label>
+    </div>
+
+    <div class="toggle-wrap">
+      <div class="toggle-info">
+        <div class="toggle-label">Lockdown on Detection</div>
+        <div class="toggle-desc">Restrict network and USB access when a critical threat is detected</div>
+      </div>
+      <label class="toggle-switch"><input type="checkbox" id="toggle_lockdownOnDetection"><span class="toggle-slider"></span></label>
+    </div>
+  </div>
+
+  <!-- ═══════ PUSH CONFIG ═══════ -->
+  <div class="card" id="pushCard" style="display:none;">
+    <div class="card-header"><span class="card-title">Push Configuration</span></div>
+    <div class="push-actions">
+      <button class="btn-push-config" id="btnPushConfig" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Push Config to Device
+      </button>
+      <span class="push-note">Changes will apply on next heartbeat (within 60 seconds)</span>
+    </div>
+  </div>
+
+  <!-- ═══════ PENDING CONFIG ═══════ -->
+  <div class="card" id="pendingCard" style="display:none;">
+    <div class="card-header"><span class="card-title">Pending Configuration Pushes</span><span class="card-link" id="pendingRefresh" style="cursor:pointer;">Refresh</span></div>
+    <table class="pending-table">
+      <thead>
+        <tr>
+          <th>Config Key</th>
+          <th>Value</th>
+          <th>Status</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="pendingTableBody">
+        <tr><td colspan="4" class="empty-state">Select a device to view pending configurations</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="footer">
+  <div class="footer-item">
+    <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+    <div>
+      <div class="footer-label">AGENT STATUS</div>
+      <div class="footer-val green">Up to Date</div>
+      <div class="footer-label">v4.27.0</div>
+    </div>
+  </div>
+  <div class="footer-item">
+    <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2596be" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg></div>
+    <div>
+      <div class="footer-label">RMM CONNECTION</div>
+      <div class="footer-val blue">Connected</div>
+      <div class="footer-label">PC Plus RMM</div>
+    </div>
+  </div>
+  <div class="footer-item">
+    <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+    <div>
+      <div class="footer-label">POLICY STATUS</div>
+      <div class="footer-val green">Compliant</div>
+      <div class="footer-label">All policies active</div>
+    </div>
+  </div>
+  <div class="footer-item">
+    <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div>
+      <div class="footer-label">LICENSE</div>
+      <div class="footer-val green">Active</div>
+      <div class="footer-label">Expires: Dec 31, 2026</div>
+    </div>
+  </div>
+  <div class="footer-item">
+    <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 22V2"/></svg></div>
+    <div>
+      <div class="footer-label">VPN</div>
+      <div class="footer-val green">Available</div>
+      <div class="footer-label">Secure Tunnel</div>
+    </div>
+  </div>
+  <div class="footer-item">
+    <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2596be" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+    <div>
+      <div class="footer-label">REMOTE SUPPORT</div>
+      <div class="footer-val blue">RustDesk</div>
+      <div class="footer-label">Coming Soon</div>
+    </div>
+  </div>
+  <div class="footer-item">
+    <div class="footer-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+    <div>
+      <div class="footer-label">NEXT REPORT</div>
+      <div class="footer-val">May 15, 2026</div>
+      <div class="footer-label">Scheduled</div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/dashboard-api.js"></script>
+<script src="js/page-loader.js"></script>
+<script src="js/device-persistence.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ─── STATE ───
+  let allDevices = [];
+  let selectedDevice = null;
+  let pendingConfigs = [];
+
+  // ─── DEFAULT CONFIG VALUES ───
+  const DEFAULTS = {
+    activeTier: 'Standard',
+    healthMonitorEnabled: false,
+    geoIpScanEnabled: false,
+    urlReputationEnabled: false,
+    healthPollIntervalMs: 30000,
+    securityScanIntervalMinutes: 360,
+    binaryIntegrityIntervalMinutes: 60,
+    servicesMonitorIntervalSeconds: 120,
+    geoIpScanIntervalSeconds: 300,
+    ransomwareProcessMonitorMs: 5000,
+    ransomwareReconciliationMs: 60000,
+    advancedDetectionRegistryMs: 30000,
+    advancedDetectionNetworkMs: 15000,
+    hardeningComplianceIntervalMinutes: 120,
+    hostsFileIntegrityIntervalSeconds: 600,
+    dnsCacheMonitorIntervalSeconds: 300,
+    browserHistoryScanIntervalMinutes: 30,
+    urlReputationIntervalSeconds: 180,
+    policyEnforcementIntervalSeconds: 300,
+    trayAdminPassword: '',
+    autoContainmentEnabled: false,
+    lockdownOnDetection: false
+  };
+
+  // ─── DOM REFS ───
+  const deviceSelect = document.getElementById('deviceSelect');
+  const applyAllCheckbox = document.getElementById('applyAllCheckbox');
+  const deviceMeta = document.getElementById('deviceMeta');
+  const metaStatusDot = document.getElementById('metaStatusDot');
+  const metaStatus = document.getElementById('metaStatus');
+  const metaDeviceId = document.getElementById('metaDeviceId');
+  const metaTier = document.getElementById('metaTier');
+  const tierCurrentLabel = document.getElementById('tierCurrentLabel');
+  const btnPushConfig = document.getElementById('btnPushConfig');
+  const pendingTableBody = document.getElementById('pendingTableBody');
+  const pendingRefresh = document.getElementById('pendingRefresh');
+  const btnTogglePw = document.getElementById('btnTogglePw');
+  const pwInput = document.getElementById('input_trayAdminPassword');
+
+  const configCards = ['tierCard', 'modulesCard', 'intervalsCard', 'securityCard', 'pushCard', 'pendingCard'];
+
+  // ─── TOAST ───
+  function showToast(message, type) {
+    type = type || 'info';
+    var container = document.getElementById('toastContainer');
+    var toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerHTML = (type === 'success' ? '&#10003; ' : type === 'error' ? '&#10007; ' : '&#9432; ') + escapeHtml(message);
+    container.appendChild(toast);
+    setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 4200);
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ─── LOAD DEVICES ───
+  async function loadDevices() {
+    try {
+      var data = await DashboardAPI.dashboard.devices();
+      if (!data || !data.length) {
+        deviceSelect.innerHTML = '<option value="">-- No devices found --</option>';
+        return;
+      }
+      allDevices = data;
+      deviceSelect.innerHTML = '<option value="">-- Select a device --</option>';
+      data.forEach(function(d) {
+        var opt = document.createElement('option');
+        opt.value = d.deviceId;
+        var status = d.isOnline ? '[Online]' : '[Offline]';
+        var tier = d.licenseTier || 'Unknown';
+        opt.textContent = d.hostname + ' ' + status + ' - ' + tier + ' (' + d.deviceId.substring(0, 8) + '...)';
+        deviceSelect.appendChild(opt);
+      });
+    } catch (e) {
+      console.error('Failed to load devices:', e);
+      deviceSelect.innerHTML = '<option value="">-- Error loading devices --</option>';
+      showToast('Failed to load devices: ' + e.message, 'error');
+    }
+  }
+
+  // ─── ON DEVICE SELECTED ───
+  function onDeviceSelected() {
+    var deviceId = deviceSelect.value;
+    if (!deviceId) {
+      selectedDevice = null;
+      deviceMeta.style.display = 'none';
+      configCards.forEach(function(id) { document.getElementById(id).style.display = 'none'; });
+      btnPushConfig.disabled = true;
+      return;
+    }
+
+    selectedDevice = allDevices.find(function(d) { return d.deviceId === deviceId; });
+    if (!selectedDevice) return;
+
+    // Show meta
+    deviceMeta.style.display = 'flex';
+    metaStatusDot.className = 'status-dot ' + (selectedDevice.isOnline ? 'online' : 'offline');
+    metaStatus.textContent = selectedDevice.isOnline ? 'Online' : 'Offline';
+    metaDeviceId.textContent = selectedDevice.deviceId;
+    metaTier.textContent = selectedDevice.licenseTier || 'Unknown';
+
+    // Show all config cards
+    configCards.forEach(function(id) { document.getElementById(id).style.display = ''; });
+    btnPushConfig.disabled = false;
+
+    // Populate form from device config or defaults
+    populateForm(selectedDevice);
+    loadPendingConfigs(deviceId);
+  }
+
+  // ─── POPULATE FORM ───
+  function populateForm(device) {
+    var cfg = device.config || {};
+
+    // Tier
+    var currentTier = cfg.activeTier || device.licenseTier || DEFAULTS.activeTier;
+    tierCurrentLabel.textContent = 'Current: ' + currentTier;
+    selectTier(currentTier);
+
+    // Module toggles
+    document.getElementById('toggle_healthMonitorEnabled').checked = getBool(cfg, 'healthMonitorEnabled', DEFAULTS.healthMonitorEnabled);
+    document.getElementById('toggle_geoIpScanEnabled').checked = getBool(cfg, 'geoIpScanEnabled', DEFAULTS.geoIpScanEnabled);
+    document.getElementById('toggle_urlReputationEnabled').checked = getBool(cfg, 'urlReputationEnabled', DEFAULTS.urlReputationEnabled);
+
+    // Intervals - convert stored values to display units
+    setIntervalInput('healthPollIntervalMs', cfg, 'ms-to-s');
+    setIntervalInput('securityScanIntervalMinutes', cfg, 'min-to-hr');
+    setIntervalInput('binaryIntegrityIntervalMinutes', cfg, 'min');
+    setIntervalInput('servicesMonitorIntervalSeconds', cfg, 'sec');
+    setIntervalInput('geoIpScanIntervalSeconds', cfg, 'sec-to-min');
+    setIntervalInput('ransomwareProcessMonitorMs', cfg, 'ms-to-s');
+    setIntervalInput('ransomwareReconciliationMs', cfg, 'ms-to-s');
+    setIntervalInput('advancedDetectionRegistryMs', cfg, 'ms-to-s');
+    setIntervalInput('advancedDetectionNetworkMs', cfg, 'ms-to-s');
+    setIntervalInput('hardeningComplianceIntervalMinutes', cfg, 'min');
+    setIntervalInput('hostsFileIntegrityIntervalSeconds', cfg, 'sec-to-min');
+    setIntervalInput('dnsCacheMonitorIntervalSeconds', cfg, 'sec-to-min');
+    setIntervalInput('browserHistoryScanIntervalMinutes', cfg, 'min');
+    setIntervalInput('urlReputationIntervalSeconds', cfg, 'sec-to-min');
+    setIntervalInput('policyEnforcementIntervalSeconds', cfg, 'sec-to-min');
+
+    // Security settings
+    pwInput.value = cfg.trayAdminPassword || DEFAULTS.trayAdminPassword;
+    document.getElementById('toggle_autoContainmentEnabled').checked = getBool(cfg, 'autoContainmentEnabled', DEFAULTS.autoContainmentEnabled);
+    document.getElementById('toggle_lockdownOnDetection').checked = getBool(cfg, 'lockdownOnDetection', DEFAULTS.lockdownOnDetection);
+  }
+
+  function getBool(cfg, key, defaultVal) {
+    if (cfg.hasOwnProperty(key)) return !!cfg[key];
+    return defaultVal;
+  }
+
+  function setIntervalInput(key, cfg, unitType) {
+    var el = document.getElementById('interval_' + key);
+    if (!el) return;
+    var raw = cfg.hasOwnProperty(key) ? cfg[key] : DEFAULTS[key];
+    el.value = convertToDisplay(raw, unitType);
+  }
+
+  function convertToDisplay(raw, unitType) {
+    switch (unitType) {
+      case 'ms-to-s': return Math.round(raw / 1000);
+      case 'min-to-hr': return +(raw / 60).toFixed(1);
+      case 'sec-to-min': return +(raw / 60).toFixed(1);
+      case 'min': return raw;
+      case 'sec': return raw;
+      default: return raw;
+    }
+  }
+
+  function convertToStored(displayVal, unitType) {
+    var v = parseFloat(displayVal);
+    if (isNaN(v)) return 0;
+    switch (unitType) {
+      case 'ms-to-s': return Math.round(v * 1000);
+      case 'min-to-hr': return Math.round(v * 60);
+      case 'sec-to-min': return Math.round(v * 60);
+      case 'min': return Math.round(v);
+      case 'sec': return Math.round(v);
+      default: return v;
+    }
+  }
+
+  // ─── TIER SELECTION ───
+  function selectTier(tier) {
+    document.querySelectorAll('.tier-option').forEach(function(el) {
+      var t = el.getAttribute('data-tier');
+      var radio = el.querySelector('input[type="radio"]');
+      if (t === tier) {
+        el.classList.add('selected');
+        radio.checked = true;
+      } else {
+        el.classList.remove('selected');
+        radio.checked = false;
+      }
+    });
+  }
+
+  document.querySelectorAll('.tier-option').forEach(function(el) {
+    el.addEventListener('click', function() {
+      selectTier(el.getAttribute('data-tier'));
+    });
+  });
+
+  // ─── PASSWORD TOGGLE ───
+  btnTogglePw.addEventListener('click', function() {
+    if (pwInput.type === 'password') {
+      pwInput.type = 'text';
+    } else {
+      pwInput.type = 'password';
+    }
+  });
+
+  // ─── COLLECT CONFIG ───
+  function collectConfig() {
+    var config = {};
+
+    // Tier
+    var selectedTierRadio = document.querySelector('input[name="activeTier"]:checked');
+    if (selectedTierRadio) config.activeTier = selectedTierRadio.value;
+
+    // Module toggles
+    config.healthMonitorEnabled = document.getElementById('toggle_healthMonitorEnabled').checked;
+    config.geoIpScanEnabled = document.getElementById('toggle_geoIpScanEnabled').checked;
+    config.urlReputationEnabled = document.getElementById('toggle_urlReputationEnabled').checked;
+
+    // Intervals
+    var intervalKeys = [
+      'healthPollIntervalMs', 'securityScanIntervalMinutes', 'binaryIntegrityIntervalMinutes',
+      'servicesMonitorIntervalSeconds', 'geoIpScanIntervalSeconds', 'ransomwareProcessMonitorMs',
+      'ransomwareReconciliationMs', 'advancedDetectionRegistryMs', 'advancedDetectionNetworkMs',
+      'hardeningComplianceIntervalMinutes', 'hostsFileIntegrityIntervalSeconds',
+      'dnsCacheMonitorIntervalSeconds', 'browserHistoryScanIntervalMinutes',
+      'urlReputationIntervalSeconds', 'policyEnforcementIntervalSeconds'
+    ];
+
+    intervalKeys.forEach(function(key) {
+      var el = document.getElementById('interval_' + key);
+      if (el) {
+        var unitType = el.getAttribute('data-unit');
+        config[key] = convertToStored(el.value, unitType);
+      }
+    });
+
+    // Security
+    config.trayAdminPassword = pwInput.value;
+    config.autoContainmentEnabled = document.getElementById('toggle_autoContainmentEnabled').checked;
+    config.lockdownOnDetection = document.getElementById('toggle_lockdownOnDetection').checked;
+
+    return config;
+  }
+
+  // ─── PUSH CONFIG ───
+  async function pushConfig() {
+    if (!selectedDevice && !applyAllCheckbox.checked) {
+      showToast('Please select a device first', 'error');
+      return;
+    }
+
+    var config = collectConfig();
+    btnPushConfig.disabled = true;
+    btnPushConfig.textContent = 'Pushing...';
+
+    try {
+      if (applyAllCheckbox.checked) {
+        // Push to all devices
+        var pushPromises = allDevices.map(function(d) {
+          return DashboardAPI.dashboard.pushConfig(d.deviceId, config);
+        });
+        await Promise.all(pushPromises);
+        showToast('Configuration pushed to all ' + allDevices.length + ' devices', 'success');
+
+        // Add pending entries for all devices
+        allDevices.forEach(function(d) {
+          addPendingEntries(d.deviceId, config);
+        });
+      } else {
+        await DashboardAPI.dashboard.pushConfig(selectedDevice.deviceId, config);
+        showToast('Configuration pushed to ' + escapeHtml(selectedDevice.hostname), 'success');
+        addPendingEntries(selectedDevice.deviceId, config);
+      }
+
+      renderPendingTable();
+    } catch (e) {
+      console.error('Push config failed:', e);
+      showToast('Failed to push config: ' + e.message, 'error');
+    } finally {
+      btnPushConfig.disabled = false;
+      btnPushConfig.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Push Config to Device';
+    }
+  }
+
+  // ─── PENDING CONFIGS ───
+  function addPendingEntries(deviceId, config) {
+    var now = new Date().toISOString();
+    Object.keys(config).forEach(function(key) {
+      pendingConfigs.push({
+        deviceId: deviceId,
+        key: key,
+        value: config[key],
+        status: 'pending',
+        timestamp: now
+      });
+    });
+  }
+
+  function loadPendingConfigs(deviceId) {
+    // Filter to show pending for the selected device
+    renderPendingTable();
+  }
+
+  function renderPendingTable() {
+    var deviceId = selectedDevice ? selectedDevice.deviceId : null;
+    var filtered = deviceId
+      ? pendingConfigs.filter(function(p) { return p.deviceId === deviceId; })
+      : pendingConfigs;
+
+    if (filtered.length === 0) {
+      pendingTableBody.innerHTML = '<tr><td colspan="4" class="empty-state">No pending configuration pushes</td></tr>';
+      return;
+    }
+
+    // Show most recent first, limit to 50
+    var rows = filtered.slice(-50).reverse();
+    pendingTableBody.innerHTML = rows.map(function(p) {
+      var displayVal = typeof p.value === 'boolean' ? (p.value ? 'Enabled' : 'Disabled') : p.value;
+      var statusClass = p.status;
+      var ts = new Date(p.timestamp);
+      var timeStr = ts.toLocaleString();
+      return '<tr>' +
+        '<td><code style="font-size:11px;background:#f1f5f9;padding:2px 6px;border-radius:3px;">' + escapeHtml(p.key) + '</code></td>' +
+        '<td>' + escapeHtml(String(displayVal)) + '</td>' +
+        '<td><span class="pending-status ' + statusClass + '">' + p.status.charAt(0).toUpperCase() + p.status.slice(1) + '</span></td>' +
+        '<td style="font-size:11px;color:var(--text-muted);">' + escapeHtml(timeStr) + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  // ─── EVENT LISTENERS ───
+  deviceSelect.addEventListener('change', onDeviceSelected);
+
+  btnPushConfig.addEventListener('click', pushConfig);
+
+  pendingRefresh.addEventListener('click', function() {
+    renderPendingTable();
+    showToast('Pending configs refreshed', 'info');
+  });
+
+  // ─── INIT ───
+  loadDevices();
+
+})();
+</script>
+</body>
+</html>
