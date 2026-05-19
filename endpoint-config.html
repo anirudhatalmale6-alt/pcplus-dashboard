@@ -1552,8 +1552,11 @@ body {
 
     // Security
     config.trayAdminPassword = pwInput.value;
-    config.autoContainmentEnabled = document.getElementById('toggle_autoContainmentEnabled').checked;
-    config.lockdownOnDetection = document.getElementById('toggle_lockdownOnDetection').checked;
+    config.autoContainmentEnabled = String(document.getElementById('toggle_autoContainmentEnabled').checked);
+    config.lockdownOnDetection = String(document.getElementById('toggle_lockdownOnDetection').checked);
+
+    // Backend expects all values as strings
+    Object.keys(config).forEach(function(k) { config[k] = String(config[k]); });
 
     return config;
   }
